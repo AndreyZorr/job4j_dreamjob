@@ -16,22 +16,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Repository
 public class MemoryVacancyRepository implements VacancyRepository {
 
-    private final AtomicInteger nextId = new AtomicInteger(1);
+    private final AtomicInteger nextId = new AtomicInteger(0);
     private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     private MemoryVacancyRepository() {
         save(new Vacancy(0, "Intern Java Developer", "Good job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true));
         save(new Vacancy(0, "Junior Java Developer", "Great job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false));
         save(new Vacancy(0, "Junior+ Java Developer", "High paying job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true));
         save(new Vacancy(0, "Middle Java Developer", "Good job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false));
         save(new Vacancy(0, "Middle+ Java Developer", "Hard work, good job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true));
         save(new Vacancy(0, "Senior Java Developer", "High paying job, hard work",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false));
     }
 
     @Override
@@ -50,7 +50,8 @@ public class MemoryVacancyRepository implements VacancyRepository {
     public boolean update(Vacancy vacancy) {
         return vacancies.computeIfPresent(vacancy.getId(),
                 (id, oldVacancy) -> new Vacancy(oldVacancy.getId(),
-                        vacancy.getTitle(), vacancy.getDescription(), vacancy.getCreationDate())) != null;
+                        vacancy.getTitle(), vacancy.getDescription(), vacancy.getCreationDate(), vacancy.getVisible()))
+                != null;
     }
 
     @Override
