@@ -16,22 +16,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Repository
 public class MemoryVacancyRepository implements VacancyRepository {
 
-    private final AtomicInteger nextId = new AtomicInteger(0);
+    private final AtomicInteger nextId = new AtomicInteger(1);
     private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     private MemoryVacancyRepository() {
         save(new Vacancy(0, "Intern Java Developer", "Good job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true, 1));
         save(new Vacancy(0, "Junior Java Developer", "Great job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false, 3));
         save(new Vacancy(0, "Junior+ Java Developer", "High paying job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true, 2));
         save(new Vacancy(0, "Middle Java Developer", "Good job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false, 3));
         save(new Vacancy(0, "Middle+ Java Developer", "Hard work, good job",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), true, 2));
         save(new Vacancy(0, "Senior Java Developer", "High paying job, hard work",
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false));
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), false, 1));
     }
 
     @Override
@@ -48,10 +48,9 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public boolean update(Vacancy vacancy) {
-        return vacancies.computeIfPresent(vacancy.getId(),
-                (id, oldVacancy) -> new Vacancy(oldVacancy.getId(),
-                        vacancy.getTitle(), vacancy.getDescription(), vacancy.getCreationDate(), vacancy.getVisible()))
-                != null;
+        return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) ->
+                new Vacancy(oldVacancy.getId(), vacancy.getTitle(), vacancy.getDescription(), vacancy.getCreationDate(),
+                vacancy.getVisible(), vacancy.getCityId())) != null;
     }
 
     @Override
