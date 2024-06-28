@@ -22,17 +22,17 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     private MemoryCandidateRepository() {
         save(new Candidate(0, "Simov Aleksandr",
-                "Looking for a job Senior Java", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                "Looking for a job Senior Java", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), 1, 0));
         save(new Candidate(0, "Rogov Ilya",
-                "Looking for a job Junior Java", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                "Looking for a job Junior Java", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), 2, 0));
         save(new Candidate(0, "Pases Viktor",
-                "Looking for a job Junior+ Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                "Looking for a job Junior+ Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), 3, 0));
         save(new Candidate(0, "Adaev Andrey",
-                "Looking for a job Intern Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                "Looking for a job Intern Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), 2, 0));
         save(new Candidate(0, "Popov Vladislav",
-                "Looking for a job Middle+ Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                "Looking for a job Middle+ Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), 1, 0));
         save(new Candidate(0, "Batov Sergey",
-                "Looking for a job Middle Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+                "Looking for a job Middle Java Developer", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), 1, 0));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MemoryCandidateRepository implements CandidateRepository {
         return candidates.computeIfPresent(candidate.getId(),
                 (id, oldCandidate) -> new Candidate(
                         oldCandidate.getId(), candidate.getName(), candidate.getDescription(),
-                        candidate.getCreationDate())) != null;
+                        candidate.getCreationDate(), candidate.getCityId(), candidate.getFileId())) != null;
     }
 
     @Override
