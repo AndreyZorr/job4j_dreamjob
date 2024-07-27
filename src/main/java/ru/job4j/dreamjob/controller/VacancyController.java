@@ -1,27 +1,19 @@
 package ru.job4j.dreamjob.controller;
 
-import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ru.job4j.dreamjob.dto.FileDto;
 import ru.job4j.dreamjob.model.Vacancy;
-import ru.job4j.dreamjob.service.CityService;
 import ru.job4j.dreamjob.service.VacancyService;
 
-@ThreadSafe
 @Controller
 @RequestMapping("/vacancies")
 public class VacancyController {
 
     private final VacancyService vacancyService;
 
-    private final CityService cityService;
-
-    public VacancyController(VacancyService vacancyService, CityService cityService) {
+    public VacancyController(VacancyService vacancyService) {
         this.vacancyService = vacancyService;
-        this.cityService = cityService;
     }
 
     @GetMapping
@@ -31,20 +23,14 @@ public class VacancyController {
     }
 
     @GetMapping("/create")
-    public String getCreationPage(Model model) {
-        model.addAttribute("cities", cityService.findAll());
+    public String getCreationPage() {
         return "vacancies/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) {
-        try {
-            vacancyService.save(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
-            return "redirect:/vacancies";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
-            return "errors/404";
-        }
+    public String create(@ModelAttribute Vacancy vacancy) {
+        vacancyService.save(vacancy);
+        return "redirect:/vacancies";
     }
 
     @GetMapping("/{id}")
@@ -54,34 +40,26 @@ public class VacancyController {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";
         }
-        model.addAttribute("cities", cityService.findAll());
         model.addAttribute("vacancy", vacancyOptional.get());
         return "vacancies/one";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) {
-        try {
-            var isUpdated = vacancyService.update(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
-            if (!isUpdated) {
-                model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
-                return "errors/404";
-            }
-            return "redirect:/vacancies";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
+    public String update(@ModelAttribute Vacancy vacancy, Model model) {
+        var isUpdated = vacancyService.update(vacancy);
+        if (!isUpdated) {
+            model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";
         }
+        return "redirect:/vacancies";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(Model model, @PathVariable int id) {
-        var fileOptional = vacancyService.findById(id);
-        if (fileOptional.isEmpty()) {
+        var isDeleted = vacancyService.deleteById(id);
+        if (!isDeleted) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";
-        } else {
-            vacancyService.deleteById(id);
         }
         return "redirect:/vacancies";
     }
