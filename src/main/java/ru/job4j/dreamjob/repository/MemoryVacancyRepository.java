@@ -15,23 +15,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Repository
 public class MemoryVacancyRepository implements VacancyRepository {
 
-    private final AtomicInteger nextId = new AtomicInteger(1);
+    private final AtomicInteger nextId = new AtomicInteger(0);
 
     private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     private MemoryVacancyRepository() {
         save(new Vacancy(0, "Intern Java Developer", "good job",
-                LocalDateTime.now(), false, 1));
+                LocalDateTime.now(), false, 1, 0));
         save(new Vacancy(0, "Junior Java Developer", "great job",
-                LocalDateTime.now(), true, 2));
+                LocalDateTime.now(), true, 2, 0));
         save(new Vacancy(0, "Junior+ Java Developer", "high paying job",
-                LocalDateTime.now(), true, 3));
+                LocalDateTime.now(), true, 3, 0));
         save(new Vacancy(0, "Middle Java Developer", "good job",
-                LocalDateTime.now(), false, 4));
+                LocalDateTime.now(), false, 4, 0));
         save(new Vacancy(0, "Middle+ Java Developer", "hard work, good job",
-                LocalDateTime.now(), true, 2));
+                LocalDateTime.now(), true, 2, 0));
         save(new Vacancy(0, "Senior Java Developer", "high paying job, hard work",
-                LocalDateTime.now(), false, 1));
+                LocalDateTime.now(), false, 1, 0));
     }
 
     @Override
@@ -54,7 +54,8 @@ public class MemoryVacancyRepository implements VacancyRepository {
                         vacancy.getDescription(),
                         vacancy.getCreationDate(),
                         vacancy.getVisible(),
-                        vacancy.getCityId())) != null;
+                        vacancy.getCityId(),
+                        vacancy.getFileId())) != null;
     }
 
     @Override
