@@ -43,7 +43,7 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public void deleteById(int id) {
-        vacancies.remove(id);
+         vacancies.remove(id);
     }
 
     @Override

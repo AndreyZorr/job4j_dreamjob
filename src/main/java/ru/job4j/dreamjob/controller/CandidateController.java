@@ -76,8 +76,8 @@ public class CandidateController {
 
     @GetMapping("/delete/{id}")
     public String delete(Model model, @PathVariable int id) {
-        var isDeleted = candidateService.findById(id);
-        if (isDeleted.isEmpty()) {
+        var isDeleted = candidateService.deleteById(id);
+        if (!isDeleted) {
             model.addAttribute("message", "Кандидат с указанным идентификатором не найдена");
             return "errors/404";
         }
