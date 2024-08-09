@@ -120,5 +120,4 @@ public class Sql2oVacancyRepositoryTest {
         var vacancy = new Vacancy(0, "title", "description", creationDate, true, 1, file.getId());
         var isUpdated = sql2oVacancyRepository.update(vacancy);
         assertThat(isUpdated).isFalse();
-    }
-}
+    }}
