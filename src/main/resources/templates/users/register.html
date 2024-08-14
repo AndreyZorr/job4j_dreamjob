@@ -10,6 +10,7 @@
    <title>Регистрация</title>
 </head>
 <body>
+<header th:insert="blocks/header :: header"></header>
 <div class="mb-3">
     <label for="name" class="form-label"><b>Имя</b></label>
     <input type="text" class="form-control" id="name" name="name" placeholder="Иван" required>
@@ -22,5 +23,16 @@
     <label for="password" class="form-label"><b>Пароль</b></label>
     <input type="password" class="form-control" id="password" name="password" required>
 </div>
+<div class="mb-3 row">
+    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6"><a class="btn btn-danger w-100" th:href="@{/users}">Отмена</a></div>
+            <div class="col-6"><button class="btn btn-primary w-100" type="submit">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
 </body>
 </html>

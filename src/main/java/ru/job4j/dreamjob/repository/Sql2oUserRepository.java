@@ -1,5 +1,7 @@
 package ru.job4j.dreamjob.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Sql2o;
 import ru.job4j.dreamjob.model.User;
@@ -11,6 +13,8 @@ import java.util.Optional;
 public class Sql2oUserRepository implements UserRepository {
 
     private final Sql2o sql2o;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Sql2oUserRepository.class);
 
     public Sql2oUserRepository(Sql2o sql2o) {
         this.sql2o = sql2o;
@@ -30,24 +34,30 @@ public class Sql2oUserRepository implements UserRepository {
             int generatedId = query.executeUpdate().getKey(Integer.class);
             user.setId(generatedId);
             return Optional.of(user);
+        } catch (Exception e) {
+            LOGGER.error("Error saving user: {}", e.getMessage(), e);
         }
+        return Optional.empty();
     }
 
     @Override
     public Optional<User> findByEmailAndPassword(String email, String password) {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("SELECT * FROM user WHERE email = :email AND password = :password");
+            var query = connection.createQuery("SELECT * FROM users WHERE email = :email AND password = :password");
             query.addParameter("email", email);
             query.addParameter("password", password);
-            var user = query.executeAndFetchFirst(User.class);
+            User user = query.executeAndFetchFirst(User.class);
             return Optional.ofNullable(user);
+        } catch (Exception e) {
+            LOGGER.error("Error finding user by email and password: {}", e.getMessage(), e);
+            return Optional.empty();
         }
     }
 
     @Override
     public Collection<User> findAll() {
-        try (var cinnection = sql2o.open()) {
-            var query = cinnection.createQuery("SELECT * FROM users");
+        try (var connection = sql2o.open()) {
+            var query = connection.createQuery("SELECT * FROM users");
             return query.setColumnMappings(User.COLUMN_MAPPING).executeAndFetch(User.class);
         }
     }
@@ -55,7 +65,7 @@ public class Sql2oUserRepository implements UserRepository {
     @Override
     public boolean deleteById(int id) {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("DELETE * FROM users WHERE id = :id");
+            var query = connection.createQuery("DELETE FROM users WHERE id = :id");
             query.addParameter("id", id);
             return query.executeUpdate().getResult() > 0;
         }
